@@ -11,10 +11,7 @@ export json_success,
     json_notfound,
     json_conflict,
     json_internal,
-    json_unavailable,
-    html_success,
-    html_fail,
-    redirect_login
+    json_unavailable
 
 # Returns a JSON response for successful operations.
 # Allows optional status code and headers.
@@ -70,31 +67,6 @@ end
 # Shortcut for 503 Service Unavailable
 function json_unavailable(message::String = "Service Unavailable")
     json_fail(ServiceUnavailableError(message))
-end
-
-# Returns an HTML success page based on the given template.
-# Allows optional overrides for layout and additional variables.
-function html_success(resources::Symbol, template::Symbol; layout::Union{Symbol,Nothing}=nothing, vars...)
-    return Genie.Renderer.Html.html(resources, template; layout=layout, vars...)
-end
-
-# Returns an HTML error page based on the given AppError.
-# Optional overrides for status, message, and details.
-function html_fail(e::AppError; status=nothing, message=nothing)
-    status = isnothing(status) ? get_code(e) : status
-    message = isnothing(message) ? get_message(e) : message
-    if status == 401
-        return redirect_login()
-    elseif status == 404
-        return Genie.Renderer.Html.serve_error_file(status, message)
-    else
-        return Genie.Renderer.Html.serve_error_file(500, message)
-    end
-end
-
-# Redirects to the login page (useful for unauthorized access handling)
-function redirect_login()
-    Genie.Renderer.redirect("login")
 end
 
 end
