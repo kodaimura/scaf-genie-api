@@ -1,0 +1,14 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - GENIE_ENV=prod
+    working_dir: /app
+    command: [ "./entrypoint.sh" ]
+    tty: true
